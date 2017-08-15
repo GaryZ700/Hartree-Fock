@@ -2,4 +2,10 @@ Python implementation the Hartree-Fock method.
 
 Built by Gary Zeri, part of the Furche Group, NS2 UCI. 
 
+References:
+	
+	"Modern Quantum Chemistry Introduction to Advanced Electronic Structure Theory" by Attila Szabo, and Neil S. Ostlund
+
+	https://www.uam.es/docencia/quimcursos/Docs/Knowledge/Fundamental_Theory/hf/node6.html
+
 
