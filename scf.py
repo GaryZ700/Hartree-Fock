@@ -1,6 +1,8 @@
 #functions used in SCF loop of Hartree-Fock method
 
 import numpy as np
+from scipy import linalg
+import math
 
 #########################
 class SCF:
@@ -21,13 +23,37 @@ class SCF:
 		
 		#get overlap matrix eigen values and vectors
 		eVal, eVec = np.linalg.eig(S)
+                 
+
+                #X = eVec * pow(eVal, -0.5) * eVec.transpose()
+            
+                test = np.linalg.qr(eVec)
+
+                length = len(test[1])
+                S = np.zeros([length,length])
+                for b1 in range(len(test[1])):
+                    for b2 in range(len(test[1])):
+
+                        val = test[1][b1][b2]
+                        if(b1 == b2):
+                            if(val > 0):
+                                S[b1][b2] = 1.0
+                            else: 
+                                S[b1][b2] = -1.0
+
+                        else:
+                            S[b1][b2] = 0.0
+
+
+                
+                Z = test[0] * S
 
 		#build transformation matrix
 		for b1 in range(nbf):
-			for b2 in range(nbf):
-				X[b1][b2] = U[b1][b2] / eVal[b2]
-
-		return X 
+                    for b2 in range(nbf):
+		            X[b1][b2] = Z[b1][b2] / math.sqrt(eVal[b1])
+                 
+		return X
 
 
 
