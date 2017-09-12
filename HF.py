@@ -81,14 +81,14 @@ while(0 == 0):
         #8
         #get eigen values and vectors of FMO
         #and get eigen value matrix
-        eVal, eVec = np.linalg.eig(FMO)
+        eVal, eVec = np.linalg.eigh(FMO)
     
         print(eVec)
         print(eVal)
 
         #9
         #transform eigen vectors to AO basis
-        eVecAO = X*eVec
+        eVecAO = np.dot(X, eVec)
         
         print("eVec AO")
         print(eVecAO)

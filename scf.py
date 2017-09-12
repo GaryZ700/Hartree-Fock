@@ -20,7 +20,7 @@ class SCF:
 		X = np.asmatrix(np.zeros([nbf,nbf]))
 
 		#get overlap matrix eigen values and vectors
-		eVal, eVec = np.linalg.eig(S)
+		eVal, eVec = np.linalg.eigh(S)
 
                 #get inverse square root of eigen values
                 for basis in range(nbf):
@@ -102,6 +102,6 @@ class SCF:
 
             for b1 in range(nbf):
                 for b2 in range(nbf):
-                    E += D[b1,b2] * (F[b1,b2] + Hcore[b1,b2])
+                    E +=  D[b1,b2] * (F[b1,b2] + Hcore[b1,b2])
 
             return E
