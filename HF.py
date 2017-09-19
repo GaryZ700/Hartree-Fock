@@ -8,10 +8,12 @@ from scipy.sparse.linalg import eigs as eig
 from scf import SCF
 from basis import Basis
 from tests.testValues import testSCF
+from integrals import Integrals
 
 scf = SCF() 
 basis = Basis()
 testValues = testSCF()
+integrals = Integrals()
 
 #########################
 #init main variables
@@ -22,16 +24,18 @@ testValues = testSCF()
 system = {
         
         #atomic coordinates
-        "R":[[0,0,0]],
+        "R":[[3,5,8], [0,0,0.5]],
         #atomic numbers
-        "Z":[1],
+        "Z":[1, 1],
         #number of electrons
         "N":10
         
         }
 
 #build basis set for system
-basis = basis.buildBasis(system)
+basisSet = basis.buildBasis(system)
+
+print(basisSet)
 
 #scf energy limit
 E_limit = 1.0 * pow(10.0, -6)
@@ -41,6 +45,9 @@ E_limit = 1.0 * pow(10.0, -6)
 
 #init integral operators
 
+print("\n \n")
+print(integrals.overlap(basisSet))
+print("###########")
 #init test operators to check program is working
 S, Vext, T = testValues.testerParse()
 
@@ -55,9 +62,9 @@ Hcore = T + Vext
 X = scf.getTransform(S)
 X = scf.zero(X)
 
-print("\n X:")
-print(X)
-print("\n")
+#print("\n X:")
+#print(X)
+#print("\n")
 
 #init energy
 E = [-float("inf")]
@@ -74,9 +81,9 @@ while(0 == 0):
         FMO = X.conjugate().transpose() * F * X
         FMO = scf.zero(FMO)
 
-        print("FMO")
-        print(FMO)
-        print("\n")
+#        print("FMO")
+#        print(FMO)
+#        print("\n")
 
         #8
         #get eigen values and vectors of FMO
@@ -90,16 +97,16 @@ while(0 == 0):
         #transform eigen vectors to AO basis
         eVecAO = np.dot(X, eVec)
         
-        print("eVec AO")
-        print(eVecAO)
-        print("\n")
+#        print("eVec AO")
+#        print(eVecAO)
+#        print("\n")
             
         #calculate density matrix
         D = scf.buildDensity(eVecAO, system["N"])
         
-        print("Density")
-        print(D)
-        print("\n")
+#        print("Density")
+#        print(D)
+#        print("\n")
     
         #calculate electronic energy
         E = scf.energy(Hcore, F, D)
