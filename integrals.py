@@ -12,7 +12,7 @@ class Integrals:
 
 	#get required data from primatives
         a1 = p1["A"]
-	a2 = p1["A"]
+	a2 = p2["A"]
 	
 	R1 = p1["R"]
 	R2 = p2["R"]
@@ -36,18 +36,15 @@ class Integrals:
 
 	#calculate primative overlap
 	#pg. 412 equ A.9 
-	overlap = constant
-	for dim in range(3):
-	    overlap *= K[dim]
+	overlap = constant * K[0] * K[1] *K[2] * p1["N"] * p2["N"] * p1["CC"] * p2["CC"]
 	
-	print("\n \n")
-	print(constant * K[0] * n1 * n2)
+        print("a" + str(a) )
+        print("m " + str(m))
+        print("D "+str(d) + "\n")
+        print("K " + str(K))
+	print("Constant "  +  str(constant))
+        print("Normalized Overlap " + str(overlap)) 
 	
-	print("K " + str(K))
-	print("Constant" + str(constant))
-	
-	print("!!!!!!!!!!!!!!")
-
 	#create gpt dictionary		
 	gpt = {
 	
@@ -89,13 +86,26 @@ class Integrals:
 		    print(basisSet[b2])
 		    for p2 in basisSet[b2]:
 	#		print("iterate over p2")
-			#perform guassian product theorem			
+			
+                        print("\n\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+                        print("P1")
+                        print(p1)
+                        #print("\n")
+                        print("P2")
+                        print(p2)
+                        #print("\n")
+
+                        #perform guassian product theorem			
 			gpt = self.GPT(p1, p2)
 	#		print(gpt["overlap"])	
 			#build overlap matrix
-			S[b1,b2] += gpt["overlap"] * gpt["C12"] * gpt["N12"] 
-			print("B12 " + str(b1) + " " + str(b2)) 
-			print(S[b1,b2])
+			S[b1,b2] += gpt["overlap"]
+                        print(S[b1,b2])
+			#print("B12 " + str(b1) + " " + str(b2)) 
+			
+                       # print("\n S:")
+                        #print(S[b1,b2])
+                        #print("\n")
 	
 
 	return S

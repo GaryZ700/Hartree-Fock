@@ -24,9 +24,9 @@ integrals = Integrals()
 system = {
         
         #atomic coordinates
-        "R":[[3,5,8], [0,0,0.5]],
+        "R":[[0,0,0.5], [3.0,2.0,5.0], [0.0,4.0,6.0]],
         #atomic numbers
-        "Z":[1, 1],
+        "Z":[1,1,1],
         #number of electrons
         "N":10
         
@@ -44,10 +44,9 @@ E_limit = 1.0 * pow(10.0, -6)
 #main code goes here
 
 #init integral operators
-
 print("\n \n")
 print(integrals.overlap(basisSet))
-print("###########")
+#print("###########")
 #init test operators to check program is working
 S, Vext, T = testValues.testerParse()
 
