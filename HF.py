@@ -24,9 +24,9 @@ integrals = Integrals()
 system = {
         
         #atomic coordinates
-        "R":[[0,0,0.5], [3.0,2.0,5.0], [0.0,4.0,6.0]],
+        "R":[[0.0,0.0,0.0]],
         #atomic numbers
-        "Z":[1,1,1],
+        "Z":[1],
         #number of electrons
         "N":10
         
@@ -44,8 +44,19 @@ E_limit = 1.0 * pow(10.0, -6)
 #main code goes here
 
 #init integral operators
-print("\n \n")
+print("\n \n ")
 print(integrals.overlap(basisSet))
+print("OVERLAP")
+
+S = integrals.KE(basisSet)
+T = integrals.KE(basisSet)
+Vext = integrals.nucAttract(basisSet, system["Z"], system["R"])
+
+G = integrals.elecRepulsion(basisSet)
+
+print(integrals.nucAttract(basisSet, system["Z"], system["R"]))
+print("VEXT")
+
 #print("###########")
 #init test operators to check program is working
 S, Vext, T = testValues.testerParse()
@@ -71,6 +82,9 @@ E = [-float("inf")]
 #4
 #set guess fock matrix equal to the Hamiltonian
 F = Hcore
+
+#scf cycle counter
+cycle = 0
 
 #scf loop
 while(0 == 0):
@@ -106,10 +120,21 @@ while(0 == 0):
 #        print("Density")
 #        print(D)
 #        print("\n")
-    
+       
         #calculate electronic energy
-        E = scf.energy(Hcore, F, D)
+        E.append(scf.energy(Hcore, F, D))
         
-        print(E)
+        #increment cycle counter
+        cycle += 1
 
-        break
+        #check convergence
+        if(abs(E[cycle] - E[cycle-1]) <= E_limit):
+            print("energy converged")
+            break
+        
+        #if convergence did not occur,
+        #rebuild Fock Matrix using Hartree Exchange Energy
+
+        htEx = integrals.HTExchange(D, G)
+
+print(E[cycle])

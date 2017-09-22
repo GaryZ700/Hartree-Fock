@@ -1,6 +1,7 @@
 #python implementation of Hartree Fock integrals as described in Szabo
 
 import numpy as np
+from scipy import special as advMath
 
 ########################
 class Integrals:
@@ -136,7 +137,7 @@ class Integrals:
         T = np.asmatrix( np.zeros( [nbf, nbf]) )
 
         #loop over basis set twice
-        for b1 in range(45):
+        for b1 in range(nbf):
 
             print("$$$$$$$$$$$$$$$$$")
             print("basis 1 = ")
@@ -215,3 +216,94 @@ class Integrals:
         return T
 
 ########################
+    def nucAttract(self, basisSet, Z, R):
+        #builds nuclear attraction/external potential matrix
+        #using eq. A.33 on pg. 430 of Szabo
+
+        #get number of basis functions
+        nbf = len(basisSet)
+
+        #init empty nuclear attraction matrix
+        Vext = np.asmatrix( np.zeros( [nbf,nbf]) )
+
+
+        #loop over basis set twice
+        for b1 in range(nbf):
+            for b2 in range(nbf):
+
+                #loop over primatives twice
+                for p1 in basisSet[b1]:
+                    for p2 in basisSet[b2]:
+                        
+                        #loop over atomic numbers:
+                        for atom in range(len(Z)):
+
+                            #begin building nuclear attraction matrix
+                        
+                            constant = -2.0 *  (np.pi / (p1["A"] + p2["A"]) ) * Z[atom]
+                            
+                            k = self.GPT(p1,p2)["K"]
+                            K = k[0] * k[1] * k [2] * p1["N"] * p2["N"]
+
+                            Vext[b1,b2] += constant * K * self.Boys(0, p1, p2, R[atom]) * p1["CC"] * p2["CC"]
+        return Vext 
+                            
+########################
+    def Boys(self, n, p1, p2, R):
+        #python implementation of the any order Boys function
+       
+       #init values for Boys function
+       a1 = p1["A"]
+       a2 = p2["A"]
+
+       R1 = p1["R"]
+       R2 = p2["R"]
+
+       a = a1 + a2
+
+       mid2 = []
+       for dim in range(3):
+          mid2.append( (a1 * R1[dim]) + (a2 * R2[dim]) )
+
+
+       RPA = np.asarray(R) - np.asarray(mid2)
+       for dim in range(3):
+           RPA[dim] = pow( RPA[dim], 0.2) * a 
+       
+       RPA2 = sum(RPA)    
+
+       if(RPA2 == 0.0):
+           return 1.0 / ( (2.0 * n) + 1.0 )
+    
+       N = n + 0.5
+       C = 2.0 * ( RPA2 ** N)
+
+       return advMath.gamma( N ) * advMath.gammainc( N, RPA2 ) / C
+
+########################
+    def elecReplsion(self, basisSet):
+        #create electron repulsion matrix
+        
+        #get number of basis functions
+        nbf = len(basisSet)
+
+        #init empty electron repulsion matrix
+        G = np.asmatrix( np.zeros( [nbf,nbf] ) )
+
+        #loop over basis functions four times, and primatives four times
+        for b1 in range(nbf):
+            for b2 in range(nbf):
+
+                for p1 in basisSet[b1]:
+                    for p2 in basisSet[b2]:
+                        
+                        #perform gaussian product theory for first two primatives
+                        gpt1 = self.GPT(p1,p2)
+
+                        for b3 in range(nbf):
+                            for b4 in range(nbf):
+
+                                for p3 in basisSet[b3]:
+                                    for p4 in basisSet[b4]
+
+
