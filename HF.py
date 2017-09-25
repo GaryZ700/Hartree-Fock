@@ -28,7 +28,7 @@ system = {
         #atomic numbers
         "Z":[1, 1],
         #number of electrons
-        "N":10
+        "N":2
         
         }
 
