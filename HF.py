@@ -9,11 +9,15 @@ from scf import SCF
 from basis import Basis
 from tests.testValues import testSCF
 from integrals import Integrals
+from ctypes import *
 
 scf = SCF() 
 basis = Basis()
 testValues = testSCF()
 integrals = Integrals()
+
+#load C library for integrals
+libcint = CDLL("/modfac/home/saswatr/Documents/Myself/repos/libcint/build")
 
 #########################
 #init main variables
