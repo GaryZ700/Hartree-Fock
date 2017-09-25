@@ -21,14 +21,14 @@ class SCF:
 
 		#get overlap matrix eigen values and vectors
 		eVal, eVec = np.linalg.eigh(S)
-
+                
                 #get inverse square root of eigen values
                 for basis in range(nbf):
                     eVal[basis] = eVal[basis]**-.5
                 
                 #sort eigen values and vectors
-                print(eVal.argsort())
-                print(eVec.argsort())
+                #print(eVal.argsort())
+                #print(eVec.argsort())
 
                 #create diagonalized eigen value matrix
 	        eValMatrix = self.eValMatrix(eVal)
@@ -83,6 +83,11 @@ class SCF:
 
             #init zero density matrix 
             D = np.asmatrix(np.zeros([nbf,nbf]))
+            
+            #if number of electrons are odd
+            #make number even
+            if(N%2 != 0):
+                N += 1
 
             for b1 in range(nbf):
                 for b2 in range(nbf):
