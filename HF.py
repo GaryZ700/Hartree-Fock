@@ -24,11 +24,11 @@ integrals = Integrals()
 system = {
         
         #atomic coordinates
-        "R":[[0.0,0.0,0.0]],
+        "R":[[0.0,0.0,0.0] ],
         #atomic numbers
         "Z":[1],
         #number of electrons
-        "N":10
+        "N":2
         
         }
 
@@ -43,27 +43,38 @@ E_limit = 1.0 * pow(10.0, -6)
 #########################
 #main code goes here
 
-#init integral operators
-print("\n \n ")
-print(integrals.overlap(basisSet))
-print("OVERLAP")
-
-S = integrals.KE(basisSet)
+#init integrals
+S = integrals.overlap(basisSet)
 T = integrals.KE(basisSet)
 Vext = integrals.nucAttract(basisSet, system["Z"], system["R"])
-
 G = integrals.elecRepulsion(basisSet)
 
-print(integrals.nucAttract(basisSet, system["Z"], system["R"]))
-print("VEXT")
+print("Integrals integrated \n")
 
-#print("###########")
+print("\n Overlap matrix")
+print(S)
+print("overlap end")
+
+print("\n KE matrix")
+print(T)
+print("KE end")
+
+print("\n Vext matrix")
+print(Vext)
+print("Vext end")
+
+print("\n G matrix")
+print(G)
+print("G end")
+
 #init test operators to check program is working
-S, Vext, T = testValues.testerParse()
+#S, Vext, T = testValues.testerParse()
 
 #hamiltonian is equal to kinetic energy plus external potential
 #pg.176 Equ. 3.233
 Hcore = T + Vext
+
+print("Hcore built")
 
 #########################
 #start of scf loop
@@ -71,6 +82,8 @@ Hcore = T + Vext
 #get transformation matrix X
 X = scf.getTransform(S)
 X = scf.zero(X)
+
+print("get transform matrix")
 
 #print("\n X:")
 #print(X)
@@ -86,6 +99,8 @@ F = Hcore
 #scf cycle counter
 cycle = 0
 
+print("scf init complete")
+
 #scf loop
 while(0 == 0):
 	
@@ -97,14 +112,15 @@ while(0 == 0):
 #        print("FMO")
 #        print(FMO)
 #        print("\n")
+        print("Fock matrix transformed")
 
         #8
         #get eigen values and vectors of FMO
         #and get eigen value matrix
         eVal, eVec = np.linalg.eigh(FMO)
     
-        print(eVec)
-        print(eVal)
+        #print(eVec)
+        #print(eVal)
 
         #9
         #transform eigen vectors to AO basis
@@ -117,6 +133,8 @@ while(0 == 0):
         #calculate density matrix
         D = scf.buildDensity(eVecAO, system["N"])
         
+        print("Density built")
+
 #        print("Density")
 #        print(D)
 #        print("\n")
@@ -132,9 +150,12 @@ while(0 == 0):
             print("energy converged")
             break
         
+        print("\nEnergy  "  + str(E[cycle]))
+
         #if convergence did not occur,
         #rebuild Fock Matrix using Hartree Exchange Energy
 
         htEx = integrals.HTExchange(D, G)
+        F = Hcore + htEx
 
 print(E[cycle])
